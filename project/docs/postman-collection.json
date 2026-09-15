@@ -1,0 +1,280 @@
+{
+  "info": {
+    "name": "SkillBridge API Collection",
+    "description": "Postman collection for Campus Skill Exchange & Help Management System.\nAll operations use the Supabase REST API.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "SUPABASE_URL",
+      "value": "your_supabase_project_url"
+    },
+    {
+      "key": "SUPABASE_ANON_KEY",
+      "value": "your_supabase_anon_key"
+    },
+    {
+      "key": "ACCESS_TOKEN",
+      "value": "obtained_after_login"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth - Register",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "apikey", "value": "{{SUPABASE_ANON_KEY}}" }
+        ],
+        "url": "{{SUPABASE_URL}}/auth/v1/signup",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"student@example.com\",\n  \"password\": \"password123\",\n  \"options\": {\n    \"data\": {\n      \"full_name\": \"John Doe\",\n      \"department\": \"Computer Science\",\n      \"year\": \"2nd Year\",\n      \"college\": \"Tech College\",\n      \"bio\": \"Passionate about programming\"\n    }\n  }\n}"
+        }
+      }
+    },
+    {
+      "name": "Auth - Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "apikey", "value": "{{SUPABASE_ANON_KEY}}" }
+        ],
+        "url": "{{SUPABASE_URL}}/auth/v1/token?grant_type=password",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"student@example.com\",\n  \"password\": \"password123\"\n}"
+        }
+      },
+    },
+    {
+      "name": "Get Profile",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "apikey", "value": "{{SUPABASE_ANON_KEY}}" },
+          { "key": "Authorization", "value": "Bearer {{ACCESS_TOKEN}}" }
+        ],
+        "url": "{{SUPABASE_URL}}/rest/v1/profiles?select=*&id=eq.current_user_id"
+      }
+    },
+    {
+      "name": "Update Profile",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "apikey", "value": "{{SUPABASE_ANON_KEY}}" },
+          { "key": "Authorization", "value": "Bearer {{ACCESS_TOKEN}}" }
+        ],
+        "url": "{{SUPABASE_URL}}/rest/v1/profiles?id=eq.current_user_id",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"full_name\": \"John Doe Updated\",\n  \"bio\": \"Updated bio text here\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Create Skill",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "apikey", "value": "{{SUPABASE_ANON_KEY}}" },
+          { "key": "Authorization", "value": "Bearer {{ACCESS_TOKEN}}" },
+          { "key": "Prefer", "value": "return=representation" }
+        ],
+        "url": "{{SUPABASE_URL}}/rest/v1/skills",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"skill_name\": \"Python Programming\",\n  \"category\": \"Programming\",\n  \"skill_level\": \"Advanced\",\n  \"description\": \"I can teach Python from basics to advanced\",\n  \"experience\": \"3 years of project experience\",\n  \"availability\": \"Both\",\n  \"preferred_mode\": \"Online\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Get All Skills",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "apikey", "value": "{{SUPABASE_ANON_KEY}}" },
+          { "key": "Authorization", "value": "Bearer {{ACCESS_TOKEN}}" }
+        ],
+        "url": "{{SUPABASE_URL}}/rest/v1/skills?select=*,profiles!skills_user_id_fkey(id,full_name,department,year,bio,email)&order=created_at.desc"
+      }
+    },
+    {
+      "name": "Get Skill by ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "apikey", "value": "{{SUPABASE_ANON_KEY}}" },
+          { "key": "Authorization", "value": "Bearer {{ACCESS_TOKEN}}" }
+        ],
+        "url": "{{SUPABASE_URL}}/rest/v1/skills?select=*,profiles!skills_user_id_fkey(id,full_name,department,year,bio,email)&id=eq.skill_id_here"
+      }
+    },
+    {
+      "name": "Update Skill",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "apikey", "value": "{{SUPABASE_ANON_KEY}}" },
+          { "key": "Authorization", "value": "Bearer {{ACCESS_TOKEN}}" },
+          { "key": "Prefer", "value": "return=representation" }
+        ],
+        "url": "{{SUPABASE_URL}}/rest/v1/skills?id=eq.skill_id_here",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"skill_level\": \"Intermediate\",\n  \"description\": \"Updated description\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Delete Skill",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "apikey", "value": "{{SUPABASE_ANON_KEY}}" },
+          { "key": "Authorization", "value": "Bearer {{ACCESS_TOKEN}}" }
+        ],
+        "url": "{{SUPABASE_URL}}/rest/v1/skills?id=eq.skill_id_here"
+      }
+    },
+    {
+      "name": "Create Help Request",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "apikey", "value": "{{SUPABASE_ANON_KEY}}" },
+          { "key": "Authorization", "value": "Bearer {{ACCESS_TOKEN}}" },
+          { "key": "Prefer", "value": "return=representation" }
+        ],
+        "url": "{{SUPABASE_URL}}/rest/v1/help_requests",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Need help with Java basics\",\n  \"skill_needed\": \"Java\",\n  \"category\": \"Programming\",\n  \"description\": \"I need help understanding OOP concepts in Java\",\n  \"priority\": \"Medium\",\n  \"preferred_mode\": \"Online\",\n  \"deadline\": \"2026-12-31\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Get All Help Requests",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "apikey", "value": "{{SUPABASE_ANON_KEY}}" },
+          { "key": "Authorization", "value": "Bearer {{ACCESS_TOKEN}}" }
+        ],
+        "url": "{{SUPABASE_URL}}/rest/v1/help_requests?select=*,profiles!help_requests_user_id_fkey(id,full_name,department,year),provider:profiles!help_requests_provider_id_fkey(id,full_name)&order=created_at.desc"
+      }
+    },
+    {
+      "name": "Update Request Status",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "apikey", "value": "{{SUPABASE_ANON_KEY}}" },
+          { "key": "Authorization", "value": "Bearer {{ACCESS_TOKEN}}" },
+          { "key": "Prefer", "value": "return=representation" }
+        ],
+        "url": "{{SUPABASE_URL}}/rest/v1/help_requests?id=eq.request_id_here",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"Completed\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Delete Help Request",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "apikey", "value": "{{SUPABASE_ANON_KEY}}" },
+          { "key": "Authorization", "value": "Bearer {{ACCESS_TOKEN}}" }
+        ],
+        "url": "{{SUPABASE_URL}}/rest/v1/help_requests?id=eq.request_id_here"
+      }
+    },
+    {
+      "name": "Offer Help (RPC)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "apikey", "value": "{{SUPABASE_ANON_KEY}}" },
+          { "key": "Authorization", "value": "Bearer {{ACCESS_TOKEN}}" }
+        ],
+        "url": "{{SUPABASE_URL}}/rest/v1/rpc/offer_help",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"request_id\": \"request_id_here\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Submit Feedback",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "apikey", "value": "{{SUPABASE_ANON_KEY}}" },
+          { "key": "Authorization", "value": "Bearer {{ACCESS_TOKEN}}" },
+          { "key": "Prefer", "value": "return=representation" }
+        ],
+        "url": "{{SUPABASE_URL}}/rest/v1/feedback",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"request_id\": \"request_id_here\",\n  \"provider_id\": \"provider_id_here\",\n  \"rating\": 5,\n  \"comment\": \"Excellent help, very patient and thorough explanation.\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Admin - Get All Users",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "apikey", "value": "{{SUPABASE_ANON_KEY}}" },
+          { "key": "Authorization", "value": "Bearer {{ACCESS_TOKEN}}" }
+        ],
+        "url": "{{SUPABASE_URL}}/rest/v1/profiles?select=*&order=created_at.desc"
+      }
+    },
+    {
+      "name": "Admin - Get All Skills",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "apikey", "value": "{{SUPABASE_ANON_KEY}}" },
+          { "key": "Authorization", "value": "Bearer {{ACCESS_TOKEN}}" }
+        ],
+        "url": "{{SUPABASE_URL}}/rest/v1/skills?select=*,profiles!skills_user_id_fkey(id,full_name,department,year,email)&order=created_at.desc"
+      }
+    },
+    {
+      "name": "Admin - Get All Requests",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "apikey", "value": "{{SUPABASE_ANON_KEY}}" },
+          { "key": "Authorization", "value": "Bearer {{ACCESS_TOKEN}}" }
+        ],
+        "url": "{{SUPABASE_URL}}/rest/v1/help_requests?select=*,profiles!help_requests_user_id_fkey(id,full_name,department,year),provider:profiles!help_requests_provider_id_fkey(id,full_name)&order=created_at.desc"
+      }
+    },
+    {
+      "name": "Admin - Get All Feedback",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "apikey", "value": "{{SUPABASE_ANON_KEY}}" },
+          { "key": "Authorization", "value": "Bearer {{ACCESS_TOKEN}}" }
+        ],
+        "url": "{{SUPABASE_URL}}/rest/v1/feedback?select=*,profiles!feedback_requester_id_fkey(id,full_name,department),help_requests(id,title,skill_needed)&order=created_at.desc"
+      }
+    }
+  ]
+}
